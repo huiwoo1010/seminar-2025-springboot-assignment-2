@@ -9,12 +9,14 @@ interface CourseRepository : ListCrudRepository<Course, Long> {
     @Query(
         """
         SELECT * FROM courses
-        WHERE year = :year AND term = :term
-          AND course_code = :courseCode AND class_code = :classCode
+        WHERE year = :year
+          AND term = :term
+          AND course_code = :courseCode
+          AND class_code = :classCode
         LIMIT 1
     """,
     )
-    fun findOne(
+    fun findCourse(
         year: Int,
         term: Term,
         courseCode: String,

@@ -1,6 +1,8 @@
 package com.wafflestudio.spring2025.config
 
 import com.wafflestudio.spring2025.user.UserArgumentResolver
+import io.netty.handler.timeout.ReadTimeoutHandler
+import io.netty.handler.timeout.WriteTimeoutHandler
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.http.client.reactive.ReactorClientHttpConnector
@@ -30,14 +32,23 @@ class WebConfig(
         val httpClient =
             HttpClient
                 .create()
-                .responseTimeout(Duration.ofSeconds(30))
+                .followRedirect(true)
+                .responseTimeout(Duration.ofSeconds(180))
+                .doOnConnected { conn ->
+                    conn
+                        .addHandlerLast(ReadTimeoutHandler(180))
+                        .addHandlerLast(WriteTimeoutHandler(180))
+                }
 
         return WebClient
             .builder()
             .baseUrl("https://sugang.snu.ac.kr")
             .clientConnector(ReactorClientHttpConnector(httpClient))
             .exchangeStrategies(strategies)
-            .defaultHeader("Accept", "*/*")
-            .build()
+            .defaultHeaders {
+                it.add("Accept", "application/vnd.ms-excel")
+                it.add("Accept", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
+                it.add("Accept", "*/*")
+            }.build()
     }
 }
