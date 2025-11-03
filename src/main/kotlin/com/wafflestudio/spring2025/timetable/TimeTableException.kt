@@ -14,11 +14,10 @@ sealed class TimeTableException(
 class TimeTableNameBlankException :
     TimeTableException(
         errorCode = 0,
-        httpStatusCode = org.springframework.http.HttpStatus.BAD_REQUEST,
+        httpStatusCode = HttpStatus.BAD_REQUEST,
         msg = "TimeTable name is blank",
     )
 
-// 시간표가 존재하지 않을 때
 class TimeTableNotFoundException :
     TimeTableException(
         errorCode = 1,
@@ -26,7 +25,6 @@ class TimeTableNotFoundException :
         msg = "TimeTable not found",
     )
 
-// 시간표 접근 권한이 없을 때
 class TimeTableForbiddenException :
     TimeTableException(
         errorCode = 2,
