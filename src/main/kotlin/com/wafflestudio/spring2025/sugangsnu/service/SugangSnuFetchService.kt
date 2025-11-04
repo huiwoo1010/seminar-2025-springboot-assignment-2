@@ -25,6 +25,16 @@ class SugangSnuFetchService(
 ) {
     private val log = LoggerFactory.getLogger(javaClass)
 
+    // 학년 파싱: 0은 0으로, 비어있거나 null이면 null, "1학년" 등은 숫자만 추출
+    private fun parseGrade(raw: String?): Int? {
+        val v = raw?.trim().orEmpty()
+        if (v.isEmpty()) return null
+        if (v == "0") return 0
+        v.toIntOrNull()?.let { return it }
+        val m = Regex("(\\d+)").find(v)
+        return m?.groupValues?.getOrNull(1)?.toIntOrNull()
+    }
+
     suspend fun importFromSugang(
         year: Int,
         term: Term,
@@ -83,7 +93,7 @@ class SugangSnuFetchService(
                         college = row.get("개설대학"),
                         department = row.get("개설학과"),
                         program = row.get("이수과정"),
-                        grade = row.get("학년").toIntOrNull(),
+                        grade = parseGrade(row.get("학년")),
                         courseCode = courseNumber,
                         classCode = lectureNumber,
                         title = fullTitle,
