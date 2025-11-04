@@ -8,6 +8,7 @@ import com.wafflestudio.spring2025.timetable.dto.core.TimeTableDto
 import com.wafflestudio.spring2025.timetable.service.TimeTableService
 import com.wafflestudio.spring2025.user.LoggedInUser
 import com.wafflestudio.spring2025.user.model.User
+import io.swagger.v3.oas.annotations.Parameter
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
@@ -26,7 +27,7 @@ class TimeTableController(
     @PostMapping
     fun create(
         @RequestBody createRequest: CreateTimeTableRequest,
-        @LoggedInUser user: User,
+        @Parameter(hidden = true) @LoggedInUser user: User,
     ): ResponseEntity<CreateTimeTableResponse> {
         val timetable = timetableService.create(createRequest.name, createRequest.year, createRequest.semester, user)
         return ResponseEntity.ok(timetable)
@@ -34,7 +35,7 @@ class TimeTableController(
 
     @GetMapping
     fun list(
-        @LoggedInUser user: User,
+        @Parameter(hidden = true) @LoggedInUser user: User,
     ): ResponseEntity<List<TimeTableDto>> {
         val timetables = timetableService.list(user)
         return ResponseEntity.ok(timetables)
@@ -43,7 +44,7 @@ class TimeTableController(
     @GetMapping("/{id}")
     fun detail(
         @PathVariable id: Long,
-        @LoggedInUser user: User,
+        @Parameter(hidden = true) @LoggedInUser user: User,
     ): ResponseEntity<TimeTableDetailDto> {
         val timetableDetail = timetableService.detail(id, user)
         return ResponseEntity.ok(timetableDetail)
@@ -53,7 +54,7 @@ class TimeTableController(
     fun update(
         @PathVariable id: Long,
         @RequestBody updateRequest: UpdateTimeTableRequest,
-        @LoggedInUser user: User,
+        @Parameter(hidden = true) @LoggedInUser user: User,
     ): ResponseEntity<TimeTableDto> {
         val updatedTimeTable = timetableService.update(id, updateRequest.name, user)
         return ResponseEntity.ok(updatedTimeTable)
@@ -62,7 +63,7 @@ class TimeTableController(
     @DeleteMapping("/{id}")
     fun delete(
         @PathVariable id: Long,
-        @LoggedInUser user: User,
+        @Parameter(hidden = true) @LoggedInUser user: User,
     ): ResponseEntity<Unit> {
         timetableService.delete(id, user)
         return ResponseEntity.noContent().build()
