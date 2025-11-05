@@ -31,3 +31,10 @@ class TimeTableForbiddenException :
         httpStatusCode = HttpStatus.FORBIDDEN,
         msg = "Forbidden to access this timetable",
     )
+
+class TimeTableCourseOverlappedException :
+    TimeTableException(
+        errorCode = 3,
+        httpStatusCode = HttpStatus.CONFLICT,
+        msg = "Course time overlaps with existing timetable",
+    )

@@ -22,4 +22,6 @@ interface CourseRepository : ListCrudRepository<Course, Long> {
         courseCode: String,
         classCode: String,
     ): Course?
+
+    fun findByTitleContainingIgnoreCaseOrProfessorContainingIgnoreCase(title: String, professor: String): List<Course>
 }

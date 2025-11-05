@@ -1,5 +1,6 @@
 package com.wafflestudio.spring2025.timetable.controller
 
+import com.wafflestudio.spring2025.timetable.dto.AddCourseRequest
 import com.wafflestudio.spring2025.timetable.dto.CreateTimeTableRequest
 import com.wafflestudio.spring2025.timetable.dto.CreateTimeTableResponse
 import com.wafflestudio.spring2025.timetable.dto.UpdateTimeTableRequest
@@ -67,5 +68,25 @@ class TimeTableController(
     ): ResponseEntity<Unit> {
         timetableService.delete(id, user)
         return ResponseEntity.noContent().build()
+    }
+
+    @PostMapping("/{timeTableId}/courses")
+    fun addCourse(
+        @PathVariable timeTableId: Long,
+        @RequestBody addCourseRequest: AddCourseRequest,
+        @Parameter(hidden = true) @LoggedInUser user: User,
+    ): ResponseEntity<TimeTableDetailDto> {
+        val updatedTimeTableDetail = timetableService.addCourse(timeTableId, addCourseRequest.courseId, user)
+        return ResponseEntity.ok(updatedTimeTableDetail)
+    }
+
+    @DeleteMapping("/{timeTableId}/courses/{courseId}")
+    fun removeCourse(
+        @PathVariable timeTableId: Long,
+        @PathVariable courseId: Long,
+        @Parameter(hidden = true) @LoggedInUser user: User,
+    ): ResponseEntity<TimeTableDetailDto> {
+        val updatedTimeTableDetail = timetableService.removeCourse(timeTableId, courseId, user)
+        return ResponseEntity.ok(updatedTimeTableDetail)
     }
 }

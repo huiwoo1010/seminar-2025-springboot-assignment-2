@@ -16,5 +16,4 @@ class CourseTimeSlot(
     var startMin: Int,
     @Column("end_min")
     var endMin: Int,
-    var place: String? = null,
 )
