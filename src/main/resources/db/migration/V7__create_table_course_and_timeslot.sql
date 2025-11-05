@@ -7,6 +7,7 @@ CREATE TABLE IF NOT EXISTS courses (
   department VARCHAR(255),
   program VARCHAR(255),
   grade INT,
+  raw_time VARCHAR(255),
   course_code VARCHAR(50) NOT NULL,
   class_code VARCHAR(50) NOT NULL,
   title VARCHAR(1000) NOT NULL,
@@ -22,7 +23,6 @@ CREATE TABLE IF NOT EXISTS course_time_slots (
   day VARCHAR(16) NOT NULL,
   start_min INT NOT NULL,
   end_min INT NOT NULL,
-  place VARCHAR(255),
   CONSTRAINT fk_slots_course
     FOREIGN KEY (course_id) REFERENCES courses(id)
     ON DELETE CASCADE

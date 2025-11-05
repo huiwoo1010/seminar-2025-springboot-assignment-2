@@ -15,6 +15,7 @@ data class Course(
     var department: String?,
     var program: String?,
     var grade: Int?,
+    val rawTime: String?,
     @Column("course_code")
     var courseCode: String,
     @Column("class_code")
