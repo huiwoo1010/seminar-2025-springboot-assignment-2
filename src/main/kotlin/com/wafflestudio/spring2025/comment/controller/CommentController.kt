@@ -8,6 +8,7 @@ import com.wafflestudio.spring2025.comment.dto.core.CommentDto
 import com.wafflestudio.spring2025.comment.service.CommentService
 import com.wafflestudio.spring2025.user.LoggedInUser
 import com.wafflestudio.spring2025.user.model.User
+import io.swagger.v3.oas.annotations.Parameter
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
@@ -35,7 +36,7 @@ class CommentController(
     fun create(
         @PathVariable postId: Long,
         @RequestBody createRequest: CreateCommentRequest,
-        @LoggedInUser user: User,
+        @Parameter(hidden = true) @LoggedInUser user: User,
     ): ResponseEntity<CreateCommentResponse> {
         val comment =
             commentService.create(
@@ -50,7 +51,7 @@ class CommentController(
     fun update(
         @PathVariable postId: Long,
         @PathVariable id: Long,
-        @LoggedInUser user: User,
+        @Parameter(hidden = true) @LoggedInUser user: User,
         @RequestBody updateRequest: UpdateCommentRequest,
     ): ResponseEntity<UpdateCommentResponse> {
         val comment =
@@ -67,7 +68,7 @@ class CommentController(
     fun delete(
         @PathVariable postId: Long,
         @PathVariable id: Long,
-        @LoggedInUser user: User,
+        @Parameter(hidden = true) @LoggedInUser user: User,
     ): ResponseEntity<Unit> {
         commentService.delete(
             commentId = id,

@@ -9,6 +9,7 @@ import com.wafflestudio.spring2025.post.dto.core.PostDto
 import com.wafflestudio.spring2025.post.service.PostService
 import com.wafflestudio.spring2025.user.LoggedInUser
 import com.wafflestudio.spring2025.user.model.User
+import io.swagger.v3.oas.annotations.Parameter
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
@@ -26,7 +27,7 @@ class PostController(
 ) {
     @PostMapping("/api/v1/boards/{boardId}/posts")
     fun create(
-        @LoggedInUser user: User,
+        @Parameter(hidden = true) @LoggedInUser user: User,
         @PathVariable boardId: Long,
         @RequestBody createRequest: CreatePostRequest,
     ): ResponseEntity<CreatePostResponse> {
@@ -68,7 +69,7 @@ class PostController(
     @PatchMapping("/api/v1/posts/{id}")
     fun update(
         @PathVariable id: Long,
-        @LoggedInUser user: User,
+        @Parameter(hidden = true) @LoggedInUser user: User,
         @RequestBody updateRequest: UpdatePostRequest,
     ): ResponseEntity<UpdatePostResponse> {
         val postDto =
@@ -84,7 +85,7 @@ class PostController(
     @DeleteMapping("/api/v1/posts/{id}")
     fun delete(
         @PathVariable id: Long,
-        @LoggedInUser user: User,
+        @Parameter(hidden = true) @LoggedInUser user: User,
     ): ResponseEntity<Unit> {
         postService.delete(id, user)
         return ResponseEntity.noContent().build()
