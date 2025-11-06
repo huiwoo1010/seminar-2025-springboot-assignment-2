@@ -49,6 +49,11 @@ class WebConfig(
                 it.add("Accept", "application/vnd.ms-excel")
                 it.add("Accept", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
                 it.add("Accept", "*/*")
+                it.add(
+                    "User-Agent",
+                    "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36",
+                )
+                it.add("Referer", "https://sugang.snu.ac.kr/sugang/cc/cc100InterfaceSrch.action")
             }.build()
     }
 }

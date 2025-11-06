@@ -48,6 +48,7 @@ class JwtAuthenticationFilter(
             listOf(
                 "/api/v1/auth/**",
                 "/api/v1/import/**",
+                "/api/v1/courses/**",
                 "/swagger-ui/**",
                 "/v3/api-docs/**",
                 "/error",
