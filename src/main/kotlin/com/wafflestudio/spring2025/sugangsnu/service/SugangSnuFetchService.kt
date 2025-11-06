@@ -32,7 +32,7 @@ class SugangSnuFetchService(
     suspend fun importFromSugang(
         year: Int,
         term: Term,
-        lang: String = "ko", // lang은 무시해도 되지만 인터페이스 유지
+        @Suppress("UNUSED_PARAMETER") lang: String = "ko", // lang은 무시해도 되지만 인터페이스 유지
         cookie: String? = null,
         ua: String? = null,
         referer: String? = null,
@@ -75,27 +75,35 @@ class SugangSnuFetchService(
                 val list = mutableListOf<Triple<DayOfWeek, Int, Int>>()
                 val reKo = Regex("^([월화수목금토일])\\((\\d{1,2}):(\\d{2})~(\\d{1,2}):(\\d{2})\\)$")
                 val reEn = Regex("^(Mon|Tue|Wed|Thu|Fri|Sat|Sun)\\((\\d{1,2}):(\\d{2})~(\\d{1,2}):(\\d{2})\\)$", RegexOption.IGNORE_CASE)
-                fun toMin(h: Int, m: Int) = h * 60 + m
-                fun dayFromKo(ch: Char) = when (ch) {
-                    '월' -> DayOfWeek.MONDAY
-                    '화' -> DayOfWeek.TUESDAY
-                    '수' -> DayOfWeek.WEDNESDAY
-                    '목' -> DayOfWeek.THURSDAY
-                    '금' -> DayOfWeek.FRIDAY
-                    '토' -> DayOfWeek.SATURDAY
-                    '일' -> DayOfWeek.SUNDAY
-                    else -> null
-                }
-                fun dayFromEn(s: String) = when (s.lowercase()) {
-                    "mon" -> DayOfWeek.MONDAY
-                    "tue" -> DayOfWeek.TUESDAY
-                    "wed" -> DayOfWeek.WEDNESDAY
-                    "thu" -> DayOfWeek.THURSDAY
-                    "fri" -> DayOfWeek.FRIDAY
-                    "sat" -> DayOfWeek.SATURDAY
-                    "sun" -> DayOfWeek.SUNDAY
-                    else -> null
-                }
+
+                fun toMin(
+                    h: Int,
+                    m: Int,
+                ) = h * 60 + m
+
+                fun dayFromKo(ch: Char) =
+                    when (ch) {
+                        '월' -> DayOfWeek.MONDAY
+                        '화' -> DayOfWeek.TUESDAY
+                        '수' -> DayOfWeek.WEDNESDAY
+                        '목' -> DayOfWeek.THURSDAY
+                        '금' -> DayOfWeek.FRIDAY
+                        '토' -> DayOfWeek.SATURDAY
+                        '일' -> DayOfWeek.SUNDAY
+                        else -> null
+                    }
+
+                fun dayFromEn(s: String) =
+                    when (s.lowercase()) {
+                        "mon" -> DayOfWeek.MONDAY
+                        "tue" -> DayOfWeek.TUESDAY
+                        "wed" -> DayOfWeek.WEDNESDAY
+                        "thu" -> DayOfWeek.THURSDAY
+                        "fri" -> DayOfWeek.FRIDAY
+                        "sat" -> DayOfWeek.SATURDAY
+                        "sun" -> DayOfWeek.SUNDAY
+                        else -> null
+                    }
                 for (it in items) {
                     val m1 = reKo.matchEntire(it)
                     if (m1 != null) {
@@ -159,29 +167,31 @@ class SugangSnuFetchService(
                 val slots = parseSlots(timeRaw)
 
                 val existing = courseRepository.findCourse(year, term, courseNumber, lectureNumber)
-                val saved = if (existing == null) {
-                    val c = courseRepository.save(course)
-                    imported++
-                    c
-                } else {
-                    val c = courseRepository.save(course.copy(id = existing.id))
-                    updated++
-                    c
-                }
+                val saved =
+                    if (existing == null) {
+                        val c = courseRepository.save(course)
+                        imported++
+                        c
+                    } else {
+                        val c = courseRepository.save(course.copy(id = existing.id))
+                        updated++
+                        c
+                    }
 
                 // 수업교시 저장 (기존 삭제 후 재생성)
                 saved.id?.let { cid ->
                     courseTimeSlotRepository.deleteByCourseId(cid)
                     if (slots.isNotEmpty()) {
-                        val entities = slots.map { (day, s, e) ->
-                            CourseTimeSlot(
-                                id = null,
-                                courseId = cid,
-                                day = day,
-                                startMin = s,
-                                endMin = e,
-                            )
-                        }
+                        val entities =
+                            slots.map { (day, s, e) ->
+                                CourseTimeSlot(
+                                    id = null,
+                                    courseId = cid,
+                                    day = day,
+                                    startMin = s,
+                                    endMin = e,
+                                )
+                            }
                         courseTimeSlotRepository.saveAll(entities)
                     }
                 }

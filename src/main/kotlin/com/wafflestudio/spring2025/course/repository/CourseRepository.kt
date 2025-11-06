@@ -23,5 +23,15 @@ interface CourseRepository : ListCrudRepository<Course, Long> {
         classCode: String,
     ): Course?
 
-    fun findByTitleContainingIgnoreCaseOrProfessorContainingIgnoreCase(title: String, professor: String): List<Course>
+    @Query(
+        """
+        SELECT * FROM courses
+        WHERE year = :year
+          AND term = :term
+    """,
+    )
+    fun findByYearAndTerm(
+        year: Int,
+        term: Term,
+    ): List<Course>
 }

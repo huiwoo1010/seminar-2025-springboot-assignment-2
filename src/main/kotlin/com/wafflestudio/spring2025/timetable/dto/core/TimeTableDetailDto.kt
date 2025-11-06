@@ -9,7 +9,7 @@ data class TimeTableDetailDto(
     val semester: String,
     val year: Int,
     val totalCredits: Int,
-    val courses: List<CourseDto>
+    val courses: List<CourseDto>,
 ) {
     constructor(timetable: TimeTable, totalCredits: Int, courses: List<CourseDto>) : this(
         id = timetable.id!!,
@@ -17,6 +17,6 @@ data class TimeTableDetailDto(
         semester = timetable.semester.name,
         year = timetable.year,
         totalCredits = totalCredits,
-        courses = courses
+        courses = courses,
     )
 }

@@ -5,6 +5,8 @@ import org.springframework.data.repository.ListCrudRepository
 
 interface CourseTimeSlotRepository : ListCrudRepository<CourseTimeSlot, Long> {
     fun deleteByCourseId(courseId: Long)
+
     fun findAllByCourseId(courseId: Long): List<CourseTimeSlot>
+
     fun findAllByCourseIdIn(courseIds: Collection<Long>): List<CourseTimeSlot>
 }

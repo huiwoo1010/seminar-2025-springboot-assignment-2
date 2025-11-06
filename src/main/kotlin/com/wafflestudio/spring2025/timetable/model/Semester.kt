@@ -4,5 +4,5 @@ enum class Semester {
     SPRING,
     SUMMER,
     FALL,
-    WINTER
+    WINTER,
 }

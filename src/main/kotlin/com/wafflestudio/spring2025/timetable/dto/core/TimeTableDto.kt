@@ -7,12 +7,12 @@ data class TimeTableDto(
     val id: Long,
     val name: String,
     val semester: Semester,
-    val year: Int
+    val year: Int,
 ) {
-    constructor(timetable: TimeTable): this(
+    constructor(timetable: TimeTable) : this(
         id = timetable.id!!,
         name = timetable.name,
         semester = timetable.semester,
-        year = timetable.year
+        year = timetable.year,
     )
 }
