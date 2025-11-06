@@ -2,7 +2,6 @@ package com.wafflestudio.spring2025.timetable.controller
 
 import com.wafflestudio.spring2025.timetable.dto.AddCourseRequest
 import com.wafflestudio.spring2025.timetable.dto.CreateTimeTableRequest
-import com.wafflestudio.spring2025.timetable.dto.CreateTimeTableResponse
 import com.wafflestudio.spring2025.timetable.dto.UpdateTimeTableRequest
 import com.wafflestudio.spring2025.timetable.dto.core.TimeTableDetailDto
 import com.wafflestudio.spring2025.timetable.dto.core.TimeTableDto
@@ -29,37 +28,25 @@ class TimeTableController(
     fun create(
         @RequestBody createRequest: CreateTimeTableRequest,
         @Parameter(hidden = true) @LoggedInUser user: User,
-    ): ResponseEntity<CreateTimeTableResponse> {
-        val timetable = timetableService.create(createRequest.name, createRequest.year, createRequest.semester, user)
-        return ResponseEntity.ok(timetable)
-    }
+    ): TimeTableDto = timetableService.create(createRequest.name, createRequest.year, createRequest.semester, user)
 
     @GetMapping
     fun list(
         @Parameter(hidden = true) @LoggedInUser user: User,
-    ): ResponseEntity<List<TimeTableDto>> {
-        val timetables = timetableService.list(user)
-        return ResponseEntity.ok(timetables)
-    }
+    ): List<TimeTableDto> = timetableService.list(user)
 
     @GetMapping("/{id}")
     fun detail(
         @PathVariable id: Long,
         @Parameter(hidden = true) @LoggedInUser user: User,
-    ): ResponseEntity<TimeTableDetailDto> {
-        val timetableDetail = timetableService.detail(id, user)
-        return ResponseEntity.ok(timetableDetail)
-    }
+    ): TimeTableDetailDto = timetableService.detail(id, user)
 
     @PatchMapping("/{id}")
     fun update(
         @PathVariable id: Long,
         @RequestBody updateRequest: UpdateTimeTableRequest,
         @Parameter(hidden = true) @LoggedInUser user: User,
-    ): ResponseEntity<TimeTableDto> {
-        val updatedTimeTable = timetableService.update(id, updateRequest.name, user)
-        return ResponseEntity.ok(updatedTimeTable)
-    }
+    ): TimeTableDto = timetableService.update(id, updateRequest.name, user)
 
     @DeleteMapping("/{id}")
     fun delete(
@@ -75,18 +62,12 @@ class TimeTableController(
         @PathVariable timeTableId: Long,
         @RequestBody addCourseRequest: AddCourseRequest,
         @Parameter(hidden = true) @LoggedInUser user: User,
-    ): ResponseEntity<TimeTableDetailDto> {
-        val updatedTimeTableDetail = timetableService.addCourse(timeTableId, addCourseRequest.courseId, user)
-        return ResponseEntity.ok(updatedTimeTableDetail)
-    }
+    ): TimeTableDetailDto = timetableService.addCourse(timeTableId, addCourseRequest.courseId, user)
 
     @DeleteMapping("/{timeTableId}/courses/{courseId}")
     fun removeCourse(
         @PathVariable timeTableId: Long,
         @PathVariable courseId: Long,
         @Parameter(hidden = true) @LoggedInUser user: User,
-    ): ResponseEntity<TimeTableDetailDto> {
-        val updatedTimeTableDetail = timetableService.removeCourse(timeTableId, courseId, user)
-        return ResponseEntity.ok(updatedTimeTableDetail)
-    }
+    ): TimeTableDetailDto = timetableService.removeCourse(timeTableId, courseId, user)
 }

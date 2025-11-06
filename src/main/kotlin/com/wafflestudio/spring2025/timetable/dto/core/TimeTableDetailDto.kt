@@ -4,18 +4,12 @@ import com.wafflestudio.spring2025.course.dto.corre.CourseDto
 import com.wafflestudio.spring2025.timetable.model.TimeTable
 
 data class TimeTableDetailDto(
-    val id: Long,
-    val name: String,
-    val semester: String,
-    val year: Int,
+    val timetable: TimeTableDto,
     val totalCredits: Int,
     val courses: List<CourseDto>,
 ) {
     constructor(timetable: TimeTable, totalCredits: Int, courses: List<CourseDto>) : this(
-        id = timetable.id!!,
-        name = timetable.name,
-        semester = timetable.semester.name,
-        year = timetable.year,
+        timetable = TimeTableDto(timetable),
         totalCredits = totalCredits,
         courses = courses,
     )

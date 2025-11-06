@@ -19,28 +19,14 @@ class CourseService(
         size: Int,
     ): CoursePagingResponse {
         val term = Term.valueOf(semester.uppercase())
+        val offset = page * size
 
-        val allCourses = courseRepository.findByYearAndTerm(year, term)
-
-        val filteredCourses =
-            if (query.isNullOrBlank()) {
-                allCourses
-            } else {
-                allCourses.filter { course ->
-                    course.title.contains(query, ignoreCase = true) ||
-                        (course.professor?.contains(query, ignoreCase = true) ?: false)
-                }
-            }
-
-        val totalElements = filteredCourses.size.toLong()
+        // Database-level filtering and pagination
+        val courses = courseRepository.searchWithPagination(year, term, query, size, offset)
+        val totalElements = courseRepository.countByYearAndTermAndQuery(year, term, query)
         val totalPages = ceil(totalElements.toDouble() / size).toInt()
 
-        val paginatedCourses =
-            filteredCourses
-                .drop(page * size)
-                .take(size)
-
-        val courseDtos = paginatedCourses.map { CourseDto(it) }
+        val courseDtos = courses.map { CourseDto(it) }
 
         return CoursePagingResponse(
             content = courseDtos,

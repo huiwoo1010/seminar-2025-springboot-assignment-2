@@ -28,10 +28,34 @@ interface CourseRepository : ListCrudRepository<Course, Long> {
         SELECT * FROM courses
         WHERE year = :year
           AND term = :term
+          AND (:query IS NULL OR :query = ''
+               OR title LIKE CONCAT('%', :query, '%')
+               OR professor LIKE CONCAT('%', :query, '%'))
+        ORDER BY id
+        LIMIT :limit OFFSET :offset
     """,
     )
-    fun findByYearAndTerm(
+    fun searchWithPagination(
         year: Int,
         term: Term,
+        query: String?,
+        limit: Int,
+        offset: Int,
     ): List<Course>
+
+    @Query(
+        """
+        SELECT COUNT(*) FROM courses
+        WHERE year = :year
+          AND term = :term
+          AND (:query IS NULL OR :query = ''
+               OR title LIKE CONCAT('%', :query, '%')
+               OR professor LIKE CONCAT('%', :query, '%'))
+    """,
+    )
+    fun countByYearAndTermAndQuery(
+        year: Int,
+        term: Term,
+        query: String?,
+    ): Long
 }

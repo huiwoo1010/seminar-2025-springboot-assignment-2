@@ -185,9 +185,9 @@ class TimetableIntegrationTest
                         .header("Authorization", "Bearer $token")
                         .contentType(MediaType.APPLICATION_JSON),
                 ).andExpect(status().isOk)
-                .andExpect(jsonPath("$.name").value("내 시간표"))
-                .andExpect(jsonPath("$.year").value(2025))
-                .andExpect(jsonPath("$.semester").value("FALL"))
+                .andExpect(jsonPath("$.timetable.name").value("내 시간표"))
+                .andExpect(jsonPath("$.timetable.year").value(2025))
+                .andExpect(jsonPath("$.timetable.semester").value("FALL"))
                 .andExpect(jsonPath("$.totalCredits").value(0))
                 .andExpect(jsonPath("$.courses").isArray)
         }
