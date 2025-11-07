@@ -38,3 +38,24 @@ class TimeTableCourseOverlappedException :
         httpStatusCode = HttpStatus.CONFLICT,
         msg = "Course time overlaps with existing timetable",
     )
+
+class TimeTableDuplicateNameException :
+    TimeTableException(
+        errorCode = 4,
+        httpStatusCode = HttpStatus.CONFLICT,
+        msg = "Timetable with the same name already exists",
+    )
+
+class TimeTableCourseDuplicateException :
+    TimeTableException(
+        errorCode = 5,
+        httpStatusCode = HttpStatus.CONFLICT,
+        msg = "Course is already added to this timetable",
+    )
+
+class TimeTableCourseSemesterMismatchException :
+    TimeTableException(
+        errorCode = 6,
+        httpStatusCode = HttpStatus.BAD_REQUEST,
+        msg = "Course year or semester does not match timetable",
+    )

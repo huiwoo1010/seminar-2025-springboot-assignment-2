@@ -17,7 +17,6 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.http.MediaType
-import org.springframework.test.annotation.DirtiesContext
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete
@@ -26,14 +25,16 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
+import org.springframework.transaction.annotation.Transactional
 import org.testcontainers.junit.jupiter.Testcontainers
 import java.time.DayOfWeek
+import kotlin.random.Random
 
 @SpringBootTest
 @ActiveProfiles("test")
 @Testcontainers
 @AutoConfigureMockMvc
-@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
+@Transactional
 class TimetableIntegrationTest
     @Autowired
     constructor(
@@ -156,6 +157,38 @@ class TimetableIntegrationTest
         }
 
         @Test
+        fun `should return error when creating timetable with blank name`() {
+            // 빈 이름으로 시간표를 생성하면 에러를 반환한다
+            val (_, token) = dataGenerator.generateUser()
+            val request = CreateTimeTableRequest(name = "   ", year = 2025, semester = Semester.FALL)
+
+            mvc
+                .perform(
+                    post("/api/v1/timetable")
+                        .header("Authorization", "Bearer $token")
+                        .content(mapper.writeValueAsString(request))
+                        .contentType(MediaType.APPLICATION_JSON),
+                ).andExpect(status().isBadRequest)
+        }
+
+        @Test
+        fun `should return error when creating timetable with duplicate name`() {
+            // 중복된 이름의 시간표를 생성하면 에러를 반환한다
+            val (user, token) = dataGenerator.generateUser()
+            dataGenerator.generateTimeTable(name = "2025 가을학기", year = 2025, semester = Semester.FALL, user = user)
+
+            val request = CreateTimeTableRequest(name = "2025 가을학기", year = 2025, semester = Semester.FALL)
+
+            mvc
+                .perform(
+                    post("/api/v1/timetable")
+                        .header("Authorization", "Bearer $token")
+                        .content(mapper.writeValueAsString(request))
+                        .contentType(MediaType.APPLICATION_JSON),
+                ).andExpect(status().isConflict)
+        }
+
+        @Test
         fun `should retrieve all own timetables`() {
             // 자신의 모든 시간표 목록을 조회할 수 있다
             val (user, token) = dataGenerator.generateUser()
@@ -193,6 +226,19 @@ class TimetableIntegrationTest
         }
 
         @Test
+        fun `should return error when retrieving non-existent timetable`() {
+            // 존재하지 않는 시간표를 조회하면 에러를 반환한다
+            val (_, token) = dataGenerator.generateUser()
+
+            mvc
+                .perform(
+                    get("/api/v1/timetable/${Random.nextInt(1000000)}")
+                        .header("Authorization", "Bearer $token")
+                        .contentType(MediaType.APPLICATION_JSON),
+                ).andExpect(status().isNotFound)
+        }
+
+        @Test
         fun `should update timetable name`() {
             // 시간표 이름을 수정할 수 있다
             val (user, token) = dataGenerator.generateUser()
@@ -227,6 +273,38 @@ class TimetableIntegrationTest
         }
 
         @Test
+        fun `should return error when updating non-existent timetable`() {
+            // 존재하지 않는 시간표를 수정하면 에러를 반환한다
+            val (_, token) = dataGenerator.generateUser()
+            val request = UpdateTimeTableRequest(name = "새 이름")
+
+            mvc
+                .perform(
+                    patch("/api/v1/timetable/${Random.nextInt(1000000)}")
+                        .header("Authorization", "Bearer $token")
+                        .content(mapper.writeValueAsString(request))
+                        .contentType(MediaType.APPLICATION_JSON),
+                ).andExpect(status().isNotFound)
+        }
+
+        @Test
+        fun `should return error when updating timetable name to duplicate`() {
+            // 다른 시간표와 동일한 이름으로 수정하면 에러를 반환한다
+            val (user, token) = dataGenerator.generateUser()
+            val timetable1 = dataGenerator.generateTimeTable(name = "시간표A", year = 2025, semester = Semester.FALL, user = user)
+            dataGenerator.generateTimeTable(name = "시간표B", year = 2025, semester = Semester.FALL, user = user)
+            val request = UpdateTimeTableRequest(name = "시간표B")
+
+            mvc
+                .perform(
+                    patch("/api/v1/timetable/${timetable1.id}")
+                        .header("Authorization", "Bearer $token")
+                        .content(mapper.writeValueAsString(request))
+                        .contentType(MediaType.APPLICATION_JSON),
+                ).andExpect(status().isConflict)
+        }
+
+        @Test
         fun `should delete a timetable`() {
             // 시간표를 삭제할 수 있다
             val (user, token) = dataGenerator.generateUser()
@@ -253,6 +331,19 @@ class TimetableIntegrationTest
                         .header("Authorization", "Bearer $token2")
                         .contentType(MediaType.APPLICATION_JSON),
                 ).andExpect(status().isForbidden)
+        }
+
+        @Test
+        fun `should return error when deleting non-existent timetable`() {
+            // 존재하지 않는 시간표를 삭제하면 에러를 반환한다
+            val (_, token) = dataGenerator.generateUser()
+
+            mvc
+                .perform(
+                    delete("/api/v1/timetable/${Random.nextInt(1000000)}")
+                        .header("Authorization", "Bearer $token")
+                        .contentType(MediaType.APPLICATION_JSON),
+                ).andExpect(status().isNotFound)
         }
 
         @Test
@@ -294,6 +385,70 @@ class TimetableIntegrationTest
         }
 
         @Test
+        fun `should return error when adding duplicate course to timetable`() {
+            // 이미 추가된 강의를 다시 추가하면 에러를 반환한다
+            val (user, token) = dataGenerator.generateUser()
+            val timetable = dataGenerator.generateTimeTable(name = "내 시간표", year = 2025, semester = Semester.FALL, user = user)
+            val request = AddCourseRequest(courseId = course1.id!!)
+
+            // First add succeeds
+            mvc
+                .perform(
+                    post("/api/v1/timetable/${timetable.id}/courses")
+                        .header("Authorization", "Bearer $token")
+                        .content(mapper.writeValueAsString(request))
+                        .contentType(MediaType.APPLICATION_JSON),
+                ).andExpect(status().isOk)
+
+            // Second add of same course should fail
+            mvc
+                .perform(
+                    post("/api/v1/timetable/${timetable.id}/courses")
+                        .header("Authorization", "Bearer $token")
+                        .content(mapper.writeValueAsString(request))
+                        .contentType(MediaType.APPLICATION_JSON),
+                ).andExpect(status().isConflict)
+        }
+
+        @Test
+        fun `should return error when adding course with mismatched year or semester`() {
+            // 시간표와 강의의 년도 또는 학기가 다르면 에러를 반환한다
+            val (user, token) = dataGenerator.generateUser()
+            val timetable = dataGenerator.generateTimeTable(name = "내 시간표", year = 2025, semester = Semester.FALL, user = user)
+
+            // Create course with mismatched year (2024 instead of 2025)
+            val mismatchedCourse =
+                courseRepository.save(
+                    Course(
+                        year = 2024,
+                        term = "FALL",
+                        category = "전공",
+                        college = "공과대학",
+                        department = "컴퓨터공학부",
+                        program = "학사",
+                        grade = 3,
+                        rawTime = "목(14:00~15:15)",
+                        courseCode = "M1522.000300",
+                        classCode = "001",
+                        title = "운영체제",
+                        credit = 3,
+                        professor = "박민수",
+                        room = "302동 305호",
+                    ),
+                )
+
+            val request = AddCourseRequest(courseId = mismatchedCourse.id!!)
+
+            mvc
+                .perform(
+                    post("/api/v1/timetable/${timetable.id}/courses")
+                        .header("Authorization", "Bearer $token")
+                        .content(mapper.writeValueAsString(request))
+                        .contentType(MediaType.APPLICATION_JSON),
+                ).andExpect(status().isBadRequest)
+        }
+
+        @Test
         fun `should return error when adding overlapping course to timetable`() {
             // 시간표에 강의 추가 시, 시간이 겹치면 에러를 반환한다
             val (user, token) = dataGenerator.generateUser()
@@ -321,6 +476,61 @@ class TimetableIntegrationTest
         }
 
         @Test
+        fun `should allow adding courses with touching time boundaries`() {
+            // 시간이 겹치지 않고 경계에서만 닿는 강의는 추가할 수 있다 (10:15 종료, 10:15 시작)
+            val (user, token) = dataGenerator.generateUser()
+            val timetable = dataGenerator.generateTimeTable(name = "내 시간표", year = 2025, semester = Semester.FALL, user = user)
+
+            // Create a course that starts exactly when course1 ends (Monday 10:15-11:30)
+            val touchingCourse =
+                courseRepository.save(
+                    Course(
+                        year = 2025,
+                        term = "FALL",
+                        category = "전공",
+                        college = "공과대학",
+                        department = "컴퓨터공학부",
+                        program = "학사",
+                        grade = 2,
+                        rawTime = "월(10:15~11:30)",
+                        courseCode = "M1522.000400",
+                        classCode = "001",
+                        title = "이산수학",
+                        credit = 3,
+                        professor = "최영수",
+                        room = "302동 401호",
+                    ),
+                )
+            courseTimeSlotRepository.save(
+                CourseTimeSlot(
+                    courseId = touchingCourse.id!!,
+                    day = DayOfWeek.MONDAY,
+                    startMin = 615, // 10:15 (same as course1 end time)
+                    endMin = 690, // 11:30
+                ),
+            )
+
+            // Add course1 first (Monday 9:00-10:15)
+            mvc
+                .perform(
+                    post("/api/v1/timetable/${timetable.id}/courses")
+                        .header("Authorization", "Bearer $token")
+                        .content(mapper.writeValueAsString(AddCourseRequest(courseId = course1.id!!)))
+                        .contentType(MediaType.APPLICATION_JSON),
+                ).andExpect(status().isOk)
+
+            // Add touching course (Monday 10:15-11:30) - should succeed
+            mvc
+                .perform(
+                    post("/api/v1/timetable/${timetable.id}/courses")
+                        .header("Authorization", "Bearer $token")
+                        .content(mapper.writeValueAsString(AddCourseRequest(courseId = touchingCourse.id!!)))
+                        .contentType(MediaType.APPLICATION_JSON),
+                ).andExpect(status().isOk)
+                .andExpect(jsonPath("$.courses.length()").value(2))
+        }
+
+        @Test
         fun `should not add a course to another user's timetable`() {
             // 다른 사람의 시간표에는 강의를 추가할 수 없다
             val (user1, _) = dataGenerator.generateUser()
@@ -335,6 +545,21 @@ class TimetableIntegrationTest
                         .content(mapper.writeValueAsString(request))
                         .contentType(MediaType.APPLICATION_JSON),
                 ).andExpect(status().isForbidden)
+        }
+
+        @Test
+        fun `should return error when adding course to non-existent timetable`() {
+            // 존재하지 않는 시간표에 강의를 추가하면 에러를 반환한다
+            val (_, token) = dataGenerator.generateUser()
+            val request = AddCourseRequest(courseId = course1.id!!)
+
+            mvc
+                .perform(
+                    post("/api/v1/timetable/${Random.nextInt(1000000)}/courses")
+                        .header("Authorization", "Bearer $token")
+                        .content(mapper.writeValueAsString(request))
+                        .contentType(MediaType.APPLICATION_JSON),
+                ).andExpect(status().isNotFound)
         }
 
         @Test
@@ -388,6 +613,20 @@ class TimetableIntegrationTest
                         .header("Authorization", "Bearer $token2")
                         .contentType(MediaType.APPLICATION_JSON),
                 ).andExpect(status().isForbidden)
+        }
+
+        @Test
+        fun `should return error when removing non-existent course from timetable`() {
+            // 존재하지 않는 강의를 시간표에서 삭제하면 에러를 반환한다
+            val (user, token) = dataGenerator.generateUser()
+            val timetable = dataGenerator.generateTimeTable(name = "내 시간표", year = 2025, semester = Semester.FALL, user = user)
+
+            mvc
+                .perform(
+                    delete("/api/v1/timetable/${timetable.id}/courses/${Random.nextInt(1000000)}")
+                        .header("Authorization", "Bearer $token")
+                        .contentType(MediaType.APPLICATION_JSON),
+                ).andExpect(status().isNotFound)
         }
 
         @Test

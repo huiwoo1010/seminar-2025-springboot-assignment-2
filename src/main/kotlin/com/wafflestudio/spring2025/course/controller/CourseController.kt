@@ -26,12 +26,17 @@ class CourseController(
             ApiResponse(
                 responseCode = "200",
                 description = "강의 검색 성공",
-                content = [Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = Schema(implementation = CoursePagingResponse::class))]
+                content = [
+                    Content(
+                        mediaType = MediaType.APPLICATION_JSON_VALUE,
+                        schema = Schema(implementation = CoursePagingResponse::class),
+                    ),
+                ],
             ),
             ApiResponse(
                 responseCode = "400",
                 description = "잘못된 요청 파라미터",
-                content = [Content(mediaType = MediaType.APPLICATION_JSON_VALUE)]
+                content = [Content(mediaType = MediaType.APPLICATION_JSON_VALUE)],
             ),
         ],
     )

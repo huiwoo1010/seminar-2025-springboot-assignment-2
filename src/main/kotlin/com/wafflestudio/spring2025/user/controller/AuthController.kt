@@ -30,7 +30,12 @@ class AuthController(
             ApiResponse(
                 responseCode = "200",
                 description = "회원가입 성공",
-                content = [Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = Schema(implementation = RegisterResponse::class))],
+                content = [
+                    Content(
+                        mediaType = MediaType.APPLICATION_JSON_VALUE,
+                        schema = Schema(implementation = RegisterResponse::class),
+                    ),
+                ],
             ),
             ApiResponse(
                 responseCode = "400",

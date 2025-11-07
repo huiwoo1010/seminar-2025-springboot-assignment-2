@@ -31,7 +31,12 @@ class BoardController(
             ApiResponse(
                 responseCode = "200",
                 description = "게시판 생성 성공",
-                content = [Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = Schema(implementation = CreateBoardResponse::class))],
+                content = [
+                    Content(
+                        mediaType = MediaType.APPLICATION_JSON_VALUE,
+                        schema = Schema(implementation = CreateBoardResponse::class),
+                    ),
+                ],
             ),
             ApiResponse(
                 responseCode = "400",
@@ -54,7 +59,12 @@ class BoardController(
             ApiResponse(
                 responseCode = "200",
                 description = "게시판 목록 조회 성공",
-                content = [Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = Schema(implementation = BoardDto::class, type = "array"))],
+                content = [
+                    Content(
+                        mediaType = MediaType.APPLICATION_JSON_VALUE,
+                        schema = Schema(implementation = BoardDto::class, type = "array"),
+                    ),
+                ],
             ),
         ],
     )

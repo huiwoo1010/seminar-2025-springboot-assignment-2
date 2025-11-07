@@ -39,10 +39,18 @@ class TimeTableController(
             ApiResponse(
                 responseCode = "200",
                 description = "시간표 생성 성공",
-                content = [Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = Schema(implementation = TimeTableDto::class))]
+                content = [Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = Schema(implementation = TimeTableDto::class))],
             ),
-            ApiResponse(responseCode = "401", description = "인증되지 않은 사용자", content = [Content(mediaType = MediaType.APPLICATION_JSON_VALUE)]),
-            ApiResponse(responseCode = "400", description = "잘못된 요청 데이터", content = [Content(mediaType = MediaType.APPLICATION_JSON_VALUE)]),
+            ApiResponse(
+                responseCode = "401",
+                description = "인증되지 않은 사용자",
+                content = [Content(mediaType = MediaType.APPLICATION_JSON_VALUE)],
+            ),
+            ApiResponse(
+                responseCode = "400",
+                description = "잘못된 요청 데이터",
+                content = [Content(mediaType = MediaType.APPLICATION_JSON_VALUE)],
+            ),
         ],
     )
     @SecurityRequirement(name = "bearerAuth")
@@ -58,9 +66,18 @@ class TimeTableController(
             ApiResponse(
                 responseCode = "200",
                 description = "시간표 목록 조회 성공",
-                content = [Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = Schema(implementation = TimeTableDto::class, type = "array"))]
+                content = [
+                    Content(
+                        mediaType = MediaType.APPLICATION_JSON_VALUE,
+                        schema = Schema(implementation = TimeTableDto::class, type = "array"),
+                    ),
+                ],
             ),
-            ApiResponse(responseCode = "401", description = "인증되지 않은 사용자", content = [Content(mediaType = MediaType.APPLICATION_JSON_VALUE)]),
+            ApiResponse(
+                responseCode = "401",
+                description = "인증되지 않은 사용자",
+                content = [Content(mediaType = MediaType.APPLICATION_JSON_VALUE)],
+            ),
         ],
     )
     @SecurityRequirement(name = "bearerAuth")
@@ -75,10 +92,23 @@ class TimeTableController(
             ApiResponse(
                 responseCode = "200",
                 description = "시간표 상세 조회 성공",
-                content = [Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = Schema(implementation = TimeTableDetailDto::class))]
+                content = [
+                    Content(
+                        mediaType = MediaType.APPLICATION_JSON_VALUE,
+                        schema = Schema(implementation = TimeTableDetailDto::class),
+                    ),
+                ],
             ),
-            ApiResponse(responseCode = "401", description = "인증되지 않은 사용자", content = [Content(mediaType = MediaType.APPLICATION_JSON_VALUE)]),
-            ApiResponse(responseCode = "404", description = "시간표를 찾을 수 없음", content = [Content(mediaType = MediaType.APPLICATION_JSON_VALUE)]),
+            ApiResponse(
+                responseCode = "401",
+                description = "인증되지 않은 사용자",
+                content = [Content(mediaType = MediaType.APPLICATION_JSON_VALUE)],
+            ),
+            ApiResponse(
+                responseCode = "404",
+                description = "시간표를 찾을 수 없음",
+                content = [Content(mediaType = MediaType.APPLICATION_JSON_VALUE)],
+            ),
         ],
     )
     @SecurityRequirement(name = "bearerAuth")
@@ -94,10 +124,18 @@ class TimeTableController(
             ApiResponse(
                 responseCode = "200",
                 description = "시간표 수정 성공",
-                content = [Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = Schema(implementation = TimeTableDto::class))]
+                content = [Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = Schema(implementation = TimeTableDto::class))],
             ),
-            ApiResponse(responseCode = "401", description = "인증되지 않은 사용자", content = [Content(mediaType = MediaType.APPLICATION_JSON_VALUE)]),
-            ApiResponse(responseCode = "404", description = "시간표를 찾을 수 없음", content = [Content(mediaType = MediaType.APPLICATION_JSON_VALUE)]),
+            ApiResponse(
+                responseCode = "401",
+                description = "인증되지 않은 사용자",
+                content = [Content(mediaType = MediaType.APPLICATION_JSON_VALUE)],
+            ),
+            ApiResponse(
+                responseCode = "404",
+                description = "시간표를 찾을 수 없음",
+                content = [Content(mediaType = MediaType.APPLICATION_JSON_VALUE)],
+            ),
         ],
     )
     @SecurityRequirement(name = "bearerAuth")
@@ -112,8 +150,16 @@ class TimeTableController(
     @ApiResponses(
         value = [
             ApiResponse(responseCode = "204", description = "시간표 삭제 성공"),
-            ApiResponse(responseCode = "401", description = "인증되지 않은 사용자", content = [Content(mediaType = MediaType.APPLICATION_JSON_VALUE)]),
-            ApiResponse(responseCode = "404", description = "시간표를 찾을 수 없음", content = [Content(mediaType = MediaType.APPLICATION_JSON_VALUE)]),
+            ApiResponse(
+                responseCode = "401",
+                description = "인증되지 않은 사용자",
+                content = [Content(mediaType = MediaType.APPLICATION_JSON_VALUE)],
+            ),
+            ApiResponse(
+                responseCode = "404",
+                description = "시간표를 찾을 수 없음",
+                content = [Content(mediaType = MediaType.APPLICATION_JSON_VALUE)],
+            ),
         ],
     )
     @SecurityRequirement(name = "bearerAuth")
@@ -132,10 +178,23 @@ class TimeTableController(
             ApiResponse(
                 responseCode = "200",
                 description = "강의 추가 성공",
-                content = [Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = Schema(implementation = TimeTableDetailDto::class))]
+                content = [
+                    Content(
+                        mediaType = MediaType.APPLICATION_JSON_VALUE,
+                        schema = Schema(implementation = TimeTableDetailDto::class),
+                    ),
+                ],
             ),
-            ApiResponse(responseCode = "401", description = "인증되지 않은 사용자", content = [Content(mediaType = MediaType.APPLICATION_JSON_VALUE)]),
-            ApiResponse(responseCode = "404", description = "시간표 또는 강의를 찾을 수 없음", content = [Content(mediaType = MediaType.APPLICATION_JSON_VALUE)]),
+            ApiResponse(
+                responseCode = "401",
+                description = "인증되지 않은 사용자",
+                content = [Content(mediaType = MediaType.APPLICATION_JSON_VALUE)],
+            ),
+            ApiResponse(
+                responseCode = "404",
+                description = "시간표 또는 강의를 찾을 수 없음",
+                content = [Content(mediaType = MediaType.APPLICATION_JSON_VALUE)],
+            ),
             ApiResponse(responseCode = "409", description = "시간대 겹침", content = [Content(mediaType = MediaType.APPLICATION_JSON_VALUE)]),
         ],
     )
@@ -153,10 +212,23 @@ class TimeTableController(
             ApiResponse(
                 responseCode = "200",
                 description = "강의 제거 성공",
-                content = [Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = Schema(implementation = TimeTableDetailDto::class))]
+                content = [
+                    Content(
+                        mediaType = MediaType.APPLICATION_JSON_VALUE,
+                        schema = Schema(implementation = TimeTableDetailDto::class),
+                    ),
+                ],
             ),
-            ApiResponse(responseCode = "401", description = "인증되지 않은 사용자", content = [Content(mediaType = MediaType.APPLICATION_JSON_VALUE)]),
-            ApiResponse(responseCode = "404", description = "시간표 또는 강의를 찾을 수 없음", content = [Content(mediaType = MediaType.APPLICATION_JSON_VALUE)]),
+            ApiResponse(
+                responseCode = "401",
+                description = "인증되지 않은 사용자",
+                content = [Content(mediaType = MediaType.APPLICATION_JSON_VALUE)],
+            ),
+            ApiResponse(
+                responseCode = "404",
+                description = "시간표 또는 강의를 찾을 수 없음",
+                content = [Content(mediaType = MediaType.APPLICATION_JSON_VALUE)],
+            ),
         ],
     )
     @SecurityRequirement(name = "bearerAuth")

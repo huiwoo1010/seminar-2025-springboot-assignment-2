@@ -28,17 +28,17 @@ class SugangSnuFetchController(
             ApiResponse(
                 responseCode = "200",
                 description = "데이터 가져오기 성공",
-                content = [Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = Schema(implementation = ImportResult::class))]
+                content = [Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = Schema(implementation = ImportResult::class))],
             ),
             ApiResponse(
                 responseCode = "400",
                 description = "잘못된 요청 파라미터",
-                content = [Content(mediaType = MediaType.APPLICATION_JSON_VALUE)]
+                content = [Content(mediaType = MediaType.APPLICATION_JSON_VALUE)],
             ),
             ApiResponse(
                 responseCode = "500",
                 description = "수강신청 서버 오류",
-                content = [Content(mediaType = MediaType.APPLICATION_JSON_VALUE)]
+                content = [Content(mediaType = MediaType.APPLICATION_JSON_VALUE)],
             ),
         ],
     )

@@ -40,7 +40,12 @@ class PostController(
             ApiResponse(
                 responseCode = "200",
                 description = "게시글 생성 성공",
-                content = [Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = Schema(implementation = CreatePostResponse::class))],
+                content = [
+                    Content(
+                        mediaType = MediaType.APPLICATION_JSON_VALUE,
+                        schema = Schema(implementation = CreatePostResponse::class),
+                    ),
+                ],
             ),
             ApiResponse(
                 responseCode = "401",
@@ -77,7 +82,12 @@ class PostController(
             ApiResponse(
                 responseCode = "200",
                 description = "게시글 목록 조회 성공",
-                content = [Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = Schema(implementation = PostPagingResponse::class))],
+                content = [
+                    Content(
+                        mediaType = MediaType.APPLICATION_JSON_VALUE,
+                        schema = Schema(implementation = PostPagingResponse::class),
+                    ),
+                ],
             ),
             ApiResponse(
                 responseCode = "404",
@@ -132,7 +142,12 @@ class PostController(
             ApiResponse(
                 responseCode = "200",
                 description = "게시글 수정 성공",
-                content = [Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = Schema(implementation = UpdatePostResponse::class))],
+                content = [
+                    Content(
+                        mediaType = MediaType.APPLICATION_JSON_VALUE,
+                        schema = Schema(implementation = UpdatePostResponse::class),
+                    ),
+                ],
             ),
             ApiResponse(
                 responseCode = "401",

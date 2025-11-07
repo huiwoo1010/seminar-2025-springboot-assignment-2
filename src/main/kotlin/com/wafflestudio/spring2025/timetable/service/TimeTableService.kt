@@ -4,7 +4,10 @@ import com.wafflestudio.spring2025.course.CourseNotFoundException
 import com.wafflestudio.spring2025.course.dto.corre.CourseDto
 import com.wafflestudio.spring2025.course.repository.CourseRepository
 import com.wafflestudio.spring2025.course.repository.CourseTimeSlotRepository
+import com.wafflestudio.spring2025.timetable.TimeTableCourseDuplicateException
 import com.wafflestudio.spring2025.timetable.TimeTableCourseOverlappedException
+import com.wafflestudio.spring2025.timetable.TimeTableCourseSemesterMismatchException
+import com.wafflestudio.spring2025.timetable.TimeTableDuplicateNameException
 import com.wafflestudio.spring2025.timetable.TimeTableForbiddenException
 import com.wafflestudio.spring2025.timetable.TimeTableNameBlankException
 import com.wafflestudio.spring2025.timetable.TimeTableNotFoundException
@@ -33,6 +36,10 @@ class TimeTableService(
     ): TimeTableDto {
         if (name.isBlank()) {
             throw TimeTableNameBlankException()
+        }
+
+        if (timeTableRepository.existsByUserIdAndNameAndYearAndSemester(user.id!!, name, year, semester.name)) {
+            throw TimeTableDuplicateNameException()
         }
 
         val timetable =
@@ -82,6 +89,12 @@ class TimeTableService(
             throw TimeTableNameBlankException()
         }
 
+        if (name != timetable.name &&
+            timeTableRepository.existsByUserIdAndNameAndYearAndSemester(user.id!!, name, timetable.year, timetable.semester.name)
+        ) {
+            throw TimeTableDuplicateNameException()
+        }
+
         val updatedTimeTable = timetable.copy(name = name)
         timeTableRepository.save(updatedTimeTable)
         return TimeTableDto(updatedTimeTable)
@@ -109,9 +122,16 @@ class TimeTableService(
         if (timetable.userId != user.id) {
             throw TimeTableForbiddenException()
         }
+
+        // Validate year and semester match
+        if (course.year != timetable.year || course.term != timetable.semester.name) {
+            throw TimeTableCourseSemesterMismatchException()
+        }
+
+        // Check for duplicate course
         val existingLink = timeTableCourseRepository.findByTimetableIdAndCourseId(timeTableId, courseId)
         if (existingLink != null) {
-            return detail(timeTableId, user)
+            throw TimeTableCourseDuplicateException()
         }
 
         val existingLinks = timeTableCourseRepository.findAllByTimetableId(timeTableId)

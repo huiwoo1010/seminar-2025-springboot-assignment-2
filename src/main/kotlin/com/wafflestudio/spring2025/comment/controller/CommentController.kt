@@ -39,15 +39,17 @@ class CommentController(
             ApiResponse(
                 responseCode = "200",
                 description = "댓글 목록 조회 성공",
-                content = [Content(
-                    mediaType = MediaType.APPLICATION_JSON_VALUE,
-                    schema = Schema(implementation = CommentDto::class, type = "array")
-                )]
+                content = [
+                    Content(
+                        mediaType = MediaType.APPLICATION_JSON_VALUE,
+                        schema = Schema(implementation = CommentDto::class, type = "array"),
+                    ),
+                ],
             ),
             ApiResponse(
                 responseCode = "404",
                 description = "게시글을 찾을 수 없음",
-                content = [Content(mediaType = MediaType.APPLICATION_JSON_VALUE)]
+                content = [Content(mediaType = MediaType.APPLICATION_JSON_VALUE)],
             ),
         ],
     )
@@ -65,20 +67,22 @@ class CommentController(
             ApiResponse(
                 responseCode = "200",
                 description = "댓글 생성 성공",
-                content = [Content(
-                    mediaType = MediaType.APPLICATION_JSON_VALUE,
-                    schema = Schema(implementation = CreateCommentResponse::class)
-                )]
+                content = [
+                    Content(
+                        mediaType = MediaType.APPLICATION_JSON_VALUE,
+                        schema = Schema(implementation = CreateCommentResponse::class),
+                    ),
+                ],
             ),
             ApiResponse(
                 responseCode = "401",
                 description = "인증되지 않은 사용자",
-                content = [Content(mediaType = MediaType.APPLICATION_JSON_VALUE)]
+                content = [Content(mediaType = MediaType.APPLICATION_JSON_VALUE)],
             ),
             ApiResponse(
                 responseCode = "404",
                 description = "게시글을 찾을 수 없음",
-                content = [Content(mediaType = MediaType.APPLICATION_JSON_VALUE)]
+                content = [Content(mediaType = MediaType.APPLICATION_JSON_VALUE)],
             ),
         ],
     )
@@ -104,25 +108,27 @@ class CommentController(
             ApiResponse(
                 responseCode = "200",
                 description = "댓글 수정 성공",
-                content = [Content(
-                    mediaType = MediaType.APPLICATION_JSON_VALUE,
-                    schema = Schema(implementation = UpdateCommentResponse::class)
-                )]
+                content = [
+                    Content(
+                        mediaType = MediaType.APPLICATION_JSON_VALUE,
+                        schema = Schema(implementation = UpdateCommentResponse::class),
+                    ),
+                ],
             ),
             ApiResponse(
                 responseCode = "401",
                 description = "인증되지 않은 사용자",
-                content = [Content(mediaType = MediaType.APPLICATION_JSON_VALUE)]
+                content = [Content(mediaType = MediaType.APPLICATION_JSON_VALUE)],
             ),
             ApiResponse(
                 responseCode = "403",
                 description = "권한 없음",
-                content = [Content(mediaType = MediaType.APPLICATION_JSON_VALUE)]
+                content = [Content(mediaType = MediaType.APPLICATION_JSON_VALUE)],
             ),
             ApiResponse(
                 responseCode = "404",
                 description = "댓글을 찾을 수 없음",
-                content = [Content(mediaType = MediaType.APPLICATION_JSON_VALUE)]
+                content = [Content(mediaType = MediaType.APPLICATION_JSON_VALUE)],
             ),
         ],
     )
@@ -151,17 +157,17 @@ class CommentController(
             ApiResponse(
                 responseCode = "401",
                 description = "인증되지 않은 사용자",
-                content = [Content(mediaType = MediaType.APPLICATION_JSON_VALUE)]
+                content = [Content(mediaType = MediaType.APPLICATION_JSON_VALUE)],
             ),
             ApiResponse(
                 responseCode = "403",
                 description = "권한 없음",
-                content = [Content(mediaType = MediaType.APPLICATION_JSON_VALUE)]
+                content = [Content(mediaType = MediaType.APPLICATION_JSON_VALUE)],
             ),
             ApiResponse(
                 responseCode = "404",
                 description = "댓글을 찾을 수 없음",
-                content = [Content(mediaType = MediaType.APPLICATION_JSON_VALUE)]
+                content = [Content(mediaType = MediaType.APPLICATION_JSON_VALUE)],
             ),
         ],
     )
